@@ -7,8 +7,6 @@ import View.FramesViewer;
 import View.Single_Frame;
 
 public class Jarvis {
-	
-	
 
 	// To find orientation of ordered triplet (p, q, r).
 	public static boolean isLeftTurn(Point p, Point q, Point r) {
@@ -19,22 +17,23 @@ public class Jarvis {
 	}
 
 	// Prints convex hull of a set of n points.
-	public static void convexHull(Point points[], int n, FramesViewer fv) {
+	public Jarvis(Point[] points, FramesViewer fv) {
 		// There must be at least 3 points
 		// TODO Report Invalid Input
-		if (n < 3)
+		if (points.length < 3)
 			return;
 		
 		// Draw Points
-
+		// -----------
+		fv.initFrame(points, 2);
+		// -----------
 
 		// Initialize Result
 		List<Point> hull = new ArrayList<Point>();
 
 		// Find the leftmost point
-		// TODO Report Starting Point
 		int leftmost = 0;
-		for (int i = 1; i < n; i++)
+		for (int i = 1; i < points.length; i++)
 			if (points[i].x < points[leftmost].x)
 				leftmost = i;
 
@@ -42,17 +41,35 @@ public class Jarvis {
 		do {
 			// Add current point to result
 			hull.add(points[p]);
+			
+			// TODO Draw Hull Vertices
+			// -----------
+			fv.addHull(points[p]);
+			// -----------
 
-			q = (p + 1) % n;
+			q = (p + 1) % points.length;
 
-			for (int i = 0; i < n; i++) {
+			for (int i = 0; i < points.length; i++) {
+				// TODO Report current points
+				// -----------
+				fv.setCurrentPoints(points[p], points[q], points[i]);
+				// -----------
+				
+				// TODO Report Intermediate Edges
+				int i1 = fv.addIntermediate(points[p], points[i]);
+				int i2 = fv.addIntermediate(points[i], points[q]);
+				
 				if (isLeftTurn(points[p], points[i], points[q])) {
-					// TODO Report New Convex Vertex and Edge
 					q = i;
-				}else {
-					// TODO Unmark determined vertex and edge
-					
 				}
+				
+				// TODO Delete Intermediate Edges
+				// -----------
+				fv.deleteIntermediate(i2);
+				fv.deleteIntermediate(i1);
+				fv.clearCurrentPoints();
+				// -----------
+				
 			}
 
 			// Now q is the most counterclockwise with
@@ -63,7 +80,12 @@ public class Jarvis {
 		} while (p != leftmost); // While we don't come to first point
 
 		// Print Result
+		
 		// TODO Report Finnal Result
+		// -----------
+		fv.finishPresent();
+		// -----------
+		
 		for (Point temp : hull)
 			System.out.println("(" + temp.x + ", " + temp.y + ")");
 	}
@@ -71,21 +93,15 @@ public class Jarvis {
 	/* Driver program to test above function */
 	public static void main(String[] args) {
 
-		Point points[] = new Point[7];
-		points[0] = new Point(0, 3);
-		points[1] = new Point(2, 3);
-		points[2] = new Point(1, 1);
-		points[3] = new Point(2, 1);
-		points[4] = new Point(3, 0);
-		points[5] = new Point(0, 0);
-		points[6] = new Point(3, 3);
-
-		int n = points.length;
-		convexHull(points, n, new FramesViewer());
+//		Point points[] = {new Point(0, 300), new Point(200, 400), 
+//				new Point(100, 100), new Point(200, 100), new Point(600, 0),
+//				new Point(100, 50), new Point(450, 300)};
+//		new Jarvis(points, new FramesViewer());
+		
+		Point[] points = { new Point(50, 300), new Point(100, 100), new Point(200, 200), new Point(400, 400),
+				new Point(50, 50), new Point(100, 200), new Point(300, 100), new Point(300, 300) };
+		new Jarvis(points, new FramesViewer());
 
 	}
-
-	// This code is contributed by Arnav Kr. Mandal.
-
 }
 
